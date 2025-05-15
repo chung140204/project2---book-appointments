@@ -11,6 +11,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AdminServices from "./pages/AdminServices";
 import ProfileEdit from "./pages/ProfileEdit";
+import UserLayout from "./UserLayout";
+import SearchResults from "./pages/SearchResults";
 
 function App() {
   const [user, setUser] = useState(undefined);
@@ -43,10 +45,13 @@ function App() {
             <Route path="/" element={<Login setUser={setUser} />} />
             <Route path="/login" element={<Navigate to="/dashboard" />} />
             <Route path="/register" element={<Navigate to="/dashboard" />} />
-            <Route path="/dashboard" element={<DashboardHomePage setUser={setUser} />} />
-            <Route path="/book" element={<BookAppointment user={user} />} />
-            <Route path="/my-appointments" element={<MyAppointments user={user} />} />
-            <Route path="/profile" element={<ProfileEdit user={user} setUser={setUser} />} />
+            <Route element={<UserLayout user={user} setUser={setUser} />}>
+              <Route path="/dashboard" element={<DashboardHomePage setUser={setUser} />} />
+              <Route path="/book" element={<BookAppointment user={user} />} />
+              <Route path="/my-appointments" element={<MyAppointments user={user} />} />
+              <Route path="/profile" element={<ProfileEdit user={user} setUser={setUser} />} />
+              <Route path="/search" element={<SearchResults />} />
+            </Route>
             <Route path="/admin" element={user.role === "admin" ? <AdminAppointments /> : <Navigate to="/dashboard" />} />
             <Route path="/admin/services" element={user.role === "admin" ? <AdminServices /> : <Navigate to="/dashboard" />} />
             <Route path="*" element={<NotFound />} />

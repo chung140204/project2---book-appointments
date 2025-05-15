@@ -3,6 +3,13 @@ import "../BookForm.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 
+const iconStyle = {
+  fontSize: 20,
+  marginRight: 10,
+  color: '#7c5fe6',
+  minWidth: 24
+};
+
 export default function BookAppointment({ user }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -102,85 +109,120 @@ export default function BookAppointment({ user }) {
   };
 
   return (
-    <div className="book-form-outer">
-      <button
-        onClick={() => navigate('/dashboard')}
-        style={{
-          position: 'absolute',
-          top: 30,
-          left: 40,
-          padding: '10px 24px',
-          background: 'linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%)',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '8px',
-          fontWeight: 'bold',
-          fontSize: '16px',
-          cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(161,140,209,0.2)'
-        }}
-      >
-        Quay lại Dashboard
-      </button>
-      <button
-        onClick={handleLogout}
-        style={{
-          position: 'absolute',
-          top: 30,
-          right: 40,
-          padding: '10px 24px',
-          background: 'linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%)',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '8px',
-          fontWeight: 'bold',
-          fontSize: '16px',
-          cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(161,140,209,0.2)'
-        }}
-      >
-        Đăng xuất
-      </button>
-      <form className="book-form-container" onSubmit={handleSubmit}>
-        <h2>Đặt lịch hẹn</h2>
-        <input
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Họ và tên"
-          required
-        />
-        <input
-          value={phone}
-          onChange={e => setPhone(e.target.value)}
-          placeholder="Số điện thoại"
-          type="tel"
-          // pattern="0[0-9]{9,10}"
-          required
-        />
-        <input
-          type="date"
-          value={date}
-          onChange={e => setDate(e.target.value)}
-          required
-        />
-        <input
-          type="time"
-          value={time}
-          onChange={e => setTime(e.target.value)}
-          required
-        />
-        <select
-          value={service}
-          onChange={e => setService(e.target.value)}
-          required
-        >
-          <option value="">Chọn dịch vụ</option>
-          {services.map(s => (
-            <option key={s.id} value={s.name}>{s.name}</option>
-          ))}
-        </select>
-        <button type="submit">Đặt lịch</button>
-      </form>
+    <div
+      style={{
+        minHeight: "calc(100vh - 120px)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        padding: "32px 0 40px 0",
+      }}  
+    >
+      <div style={{
+        background: "#fff",
+        borderRadius: 18,
+        boxShadow: "0 2px 16px rgba(161,140,209,0.10)",
+        padding: "40px 32px 32px 32px",
+        minWidth: 340,
+        maxWidth: 700,
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginTop: 0,
+        marginBottom: 32,
+      }}>
+        {/* Icon lịch lớn phía trên */}
+        <div style={{
+          width: 80,
+          height: 80,
+          borderRadius: "50%",
+          background: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 38,
+          color: "#fff",
+          fontWeight: 700,
+          marginBottom: 18
+        }}>
+          <span role="img" aria-label="calendar">📅</span>
+        </div>
+        <h2 style={{ color: "#7c5fe6", marginBottom: 28, fontWeight: 700, fontSize: 26 }}>Đặt lịch hẹn</h2>
+        <form style={{ width: "100%" }} onSubmit={handleSubmit}>
+          <label style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+            <span style={iconStyle}>👤</span>
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Họ và tên"
+              required
+              style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16 }}
+            />
+          </label>
+          <label style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+            <span style={iconStyle}>📱</span>
+            <input
+              type="tel"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              placeholder="Số điện thoại"
+              required
+              style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16 }}
+            />
+          </label>
+          <label style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+            <span style={iconStyle}>📅</span>
+            <input
+              type="date"
+              value={date}
+              onChange={e => setDate(e.target.value)}
+              required
+              style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16 }}
+            />
+          </label>
+          <label style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
+            <span style={iconStyle}>⏰</span>
+            <input
+              type="time"
+              value={time}
+              onChange={e => setTime(e.target.value)}
+              required
+              style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16 }}
+            />
+          </label>
+          <label style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
+            <span style={iconStyle}>🛠️</span>
+            <select
+              value={service}
+              onChange={e => setService(e.target.value)}
+              required
+              style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16 }}
+            >
+              <option value="">Chọn dịch vụ</option>
+              {services.map(s => (
+                <option key={s.id} value={s.name}>{s.name}</option>
+              ))}
+            </select>
+          </label>
+          <button type="submit" style={{
+            width: "100%",
+            padding: 14,
+            background: "linear-gradient(90deg, #a18cd1 0%, #6dd5fa 100%)",
+            color: "#fff",
+            border: "none",
+            borderRadius: 8,
+            fontSize: 18,
+            fontWeight: 700,
+            cursor: "pointer",
+            marginTop: 8,
+            marginBottom: 8,
+            transition: "background 0.2s, color 0.2s"
+          }}>Đặt lịch</button>
+        </form>
+      </div>
     </div>
   );
 }

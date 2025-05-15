@@ -2,9 +2,21 @@ import React, { useState } from "react";
 import LanguageSelector from "./LanguageSelector";
 import NotificationBell from "./NotificationBell";
 import ProfileMenu from "./ProfileMenu";
+import { useNavigate } from "react-router-dom";
 
 export default function HeaderBar({ user, onToggleSidebar, onLogout }) {
   const [lang, setLang] = useState("en");
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (search.trim()) {
+      navigate(`/search?query=${encodeURIComponent(search.trim())}`);
+      setSearch("");
+    }
+  };
+
   return (
     <div style={{
       width: "100%",
@@ -27,17 +39,22 @@ export default function HeaderBar({ user, onToggleSidebar, onLogout }) {
         >
           <span className="material-icons">menu</span>
         </button>
-        <div style={{
-          background: "#f4f6fa",
-          borderRadius: 20,
-          padding: "6px 16px",
-          display: "flex",
-          alignItems: "center"
-        }}>
+        <form
+          onSubmit={handleSearch}
+          style={{
+            background: "#f4f6fa",
+            borderRadius: 20,
+            padding: "6px 16px",
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <span className="material-icons" style={{ color: "#aaa", fontSize: 20, marginRight: 6 }}>search</span>
           <input
             type="text"
             placeholder="Search..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
             style={{
               border: "none",
               background: "transparent",
@@ -46,7 +63,7 @@ export default function HeaderBar({ user, onToggleSidebar, onLogout }) {
               width: 120
             }}
           />
-        </div>
+        </form>
       </div>
       {/* Right: Language, icons, avatar, settings */}
       <div style={{ display: "flex", alignItems: "center", gap: 24 }}>

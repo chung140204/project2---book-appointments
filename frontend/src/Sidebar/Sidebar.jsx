@@ -26,7 +26,7 @@ export default function Sidebar({ collapsed, onLogout, navigate }) {
         <span>Booking</span>
       </div>
       <nav style={{ flex: 1 }}>
-        <SidebarButton label="Home" onClick={() => navigate("/home")} icon="🏠" collapsed={collapsed} />
+        <SidebarButton label="Home" onClick={() => navigate("/dashboard")} icon="🏠" collapsed={collapsed} />
         <SidebarButton label="Đặt lịch" onClick={() => navigate("/book")} icon="📝" collapsed={collapsed} />
         <SidebarButton label="Lịch của tôi" onClick={() => navigate("/my-appointments")} icon="📅" collapsed={collapsed} />
         <SidebarButton label="Chỉnh sửa thông tin" onClick={() => navigate("/profile")} icon="👤" collapsed={collapsed} />

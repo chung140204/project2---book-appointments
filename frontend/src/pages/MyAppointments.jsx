@@ -21,6 +21,7 @@ export default function MyAppointments({ user }) {
         setTotal(data.total);
       });
   }, [user.id, page, search, filterStatus]);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -53,19 +54,19 @@ export default function MyAppointments({ user }) {
     });
   };
 
-  // Hàm format ngày/thời gian cho đẹp
   const formatDate = (dateStr) => {
     const d = new Date(dateStr);
-    // Định dạng dd/MM/yyyy
     return d.toLocaleDateString("vi-VN", { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
+
   const formatTime = (timeStr) => {
-    // Định dạng HH:mm
     return timeStr?.slice(0,5);
   };
+
   const totalPages = Math.ceil(total / limit);
+
   function getPageNumbers(current, total) {
-    const delta = 2; // Số trang lân cận mỗi bên
+    const delta = 2;
     const range = [];
     for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
       range.push(i);
@@ -74,132 +75,206 @@ export default function MyAppointments({ user }) {
     if (current + delta < total - 1) range.push("...");
     range.unshift(1);
     if (total > 1) range.push(total);
-    return range.filter((v, i, arr) => arr.indexOf(v) === i); // Loại trùng
+    return range.filter((v, i, arr) => arr.indexOf(v) === i);
   }
 
   return (
-    <div className="my-appointments-container">
-      <div className="my-appointments-header">
-  <div className="my-appointments-title">Lịch hẹn của tôi</div>
-  <div className="my-appointments-actions">
-    <button className="nav-btn" onClick={() => navigate("/dashboard")}>Quay lại Dashboard</button>
-    <button className="nav-btn" onClick={() => navigate("/book")}>Đặt lịch mới</button>
-    <button className="nav-btn" onClick={handleLogout}>Đăng xuất</button>
-  </div>
-</div>
-      <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
-        <input
-          type="text"
-          value={search}
-          onChange={e => { setSearch(e.target.value); setPage(1); }}
-          placeholder="Tìm kiếm theo tên, SĐT, dịch vụ..."
-          style={{ width: 220, padding: 8, borderRadius: 6, border: '1.5px solid #a18cd1', fontSize: 15 }}
-        />
-        <select
-          value={filterStatus}
-          onChange={e => { setFilterStatus(e.target.value); setPage(1); }}
-          style={{ padding: 8, borderRadius: 6, fontSize: 15 }}
-        >
-          <option value="">Tất cả trạng thái</option>
-          <option value="pending">Chờ duyệt</option>
-          <option value="confirmed">Đã xác nhận</option>
-          <option value="rejected">Đã từ chối</option>
-          <option value="cancelled">Đã hủy</option>
-        </select>
-      </div>
-      <table className="my-appointments-table">
-        <thead>
-          <tr>
-            <th>Ngày</th>
-            <th>Giờ</th>
-            <th>Dịch vụ</th>
-            <th>Họ tên</th>
-            <th>SĐT</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          {appointments.map(a => (
-            <tr key={a.id}>
-              <td>{formatDate(a.date)}</td>
-              <td>{formatTime(a.time)}</td>
-              <td>{a.service}</td>
-              <td>{a.name || "-"}</td>
-              <td>{a.phone || "-"}</td>
-              <td>
-                <span className={
-                  a.status === "confirmed"
-                    ? "status-confirmed"
-                    : a.status === "rejected"
-                    ? "status-rejected"
-                    : a.status === "cancelled"
-                    ? "status-cancelled"
-                    : "status-pending"
-                }>
-                  {a.status === "confirmed"
-                    ? "Đã xác nhận"
-                    : a.status === "rejected"
-                    ? "Đã từ chối"
-                    : a.status === "cancelled"
-                    ? "Đã hủy"
-                    : "Chờ duyệt"}
-                </span>
-              </td>
-              <td>
-                {(a.status !== "cancelled" && a.status !== "rejected") && (
-                  <button className="cancel-btn" onClick={() => handleCancel(a.id)}>
-                    Hủy
-                  </button>
-                )}
-              </td>
-            </tr>
-          ))}
-          {appointments.length === 0 && (
+    <div style={{
+      minHeight: "calc(100vh - 120px)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      padding: "32px 0 40px 0",
+    }}>
+      <div style={{
+        background: "#fff",
+        borderRadius: 18,
+        boxShadow: "0 2px 16px rgba(161,140,209,0.10)",
+        padding: "40px 32px 32px 32px",
+        minWidth: 340,
+        maxWidth: 1100,
+        width: "100%",
+        marginTop: 32,
+        marginBottom: 32,
+      }}>
+        <div style={{ marginBottom: 24 }}>
+          <h2 style={{ color: "#7c5fe6", margin: 0, fontSize: 24 }}>Lịch hẹn của tôi</h2>
+        </div>
+
+        <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
+          <input
+            type="text"
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+            placeholder="Tìm kiếm theo tên, SĐT, dịch vụ..."
+            style={{ 
+              width: 220, 
+              padding: 8, 
+              borderRadius: 6, 
+              border: '1.5px solid #a18cd1', 
+              fontSize: 15 
+            }}
+          />
+          <select
+            value={filterStatus}
+            onChange={e => { setFilterStatus(e.target.value); setPage(1); }}
+            style={{ 
+              padding: 8, 
+              borderRadius: 6, 
+              fontSize: 15,
+              border: '1.5px solid #a18cd1',
+              minWidth: 160
+            }}
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="pending">Chờ duyệt</option>
+            <option value="confirmed">Đã xác nhận</option>
+            <option value="rejected">Đã từ chối</option>
+            <option value="cancelled">Đã hủy</option>
+          </select>
+        </div>
+
+        <table className="my-appointments-table">
+          <thead>
             <tr>
-              <td colSpan={7} style={{textAlign: "center", color: "#888"}}>Không có lịch hẹn nào.</td>
+              <th>Ngày</th>
+              <th>Giờ</th>
+              <th>Dịch vụ</th>
+              <th>Họ tên</th>
+              <th>SĐT</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
             </tr>
+          </thead>
+          <tbody>
+            {appointments.map(a => (
+              <tr key={a.id}>
+                <td>{formatDate(a.date)}</td>
+                <td>{formatTime(a.time)}</td>
+                <td>{a.service}</td>
+                <td>{a.name || "-"}</td>
+                <td>{a.phone || "-"}</td>
+                <td>
+                  <span className={
+                    a.status === "confirmed"
+                      ? "status-confirmed"
+                      : a.status === "rejected"
+                      ? "status-rejected"
+                      : a.status === "cancelled"
+                      ? "status-cancelled"
+                      : "status-pending"
+                  }>
+                    {a.status === "confirmed"
+                      ? "Đã xác nhận"
+                      : a.status === "rejected"
+                      ? "Đã từ chối"
+                      : a.status === "cancelled"
+                      ? "Đã hủy"
+                      : "Chờ duyệt"}
+                  </span>
+                </td>
+                <td>
+                  {(a.status !== "cancelled" && a.status !== "rejected") && (
+                    <button 
+                      className="cancel-btn" 
+                      onClick={() => handleCancel(a.id)}
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: 6,
+                        border: "none",
+                        background: "black",
+                        color: "white",
+                        cursor: "pointer",
+                        fontSize: 14
+                      }}
+                    >
+                      Hủy
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {appointments.length === 0 && (
+              <tr>
+                <td colSpan={7} style={{textAlign: "center", color: "#888", padding: "24px 0"}}>
+                  Không có lịch hẹn nào.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+
+        <div style={{ 
+          textAlign: "center", 
+          marginTop: 24, 
+          display: "flex", 
+          justifyContent: "center", 
+          gap: 4 
+        }}>
+          <button
+            className="nav-btn"
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+            style={{ 
+              minWidth: 36,
+              padding: "6px 12px",
+              borderRadius: 6,
+              border: "1px solid #a18cd1",
+              background: "white",
+              cursor: page === 1 ? "not-allowed" : "pointer",
+              opacity: page === 1 ? 0.5 : 1
+            }}
+          >
+            &lt;
+          </button>
+          {getPageNumbers(page, totalPages).map((num, idx) =>
+            num === "..." ? (
+              <span key={idx} style={{ 
+                display: "inline-block", 
+                minWidth: 36, 
+                textAlign: "center",
+                padding: "6px 12px"
+              }}>
+                ...
+              </span>
+            ) : (
+              <button
+                key={num}
+                className="nav-btn"
+                style={{
+                  minWidth: 36,
+                  padding: "6px 12px",
+                  borderRadius: 6,
+                  background: num === page ? "#7c5fe6" : "white",
+                  color: num === page ? "white" : "#333",
+                  border: "1px solid #a18cd1",
+                  cursor: num === page ? "default" : "pointer",
+                  fontWeight: num === page ? "bold" : "normal",
+                }}
+                onClick={() => setPage(num)}
+                disabled={num === page}
+              >
+                {num}
+              </button>
+            )
           )}
-        </tbody>
-      </table>
-      <div style={{ textAlign: "center", marginTop: 20, display: "flex", justifyContent: "center", gap: 4 }}>
-        <button
-          className="nav-btn"
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-          style={{ minWidth: 36 }}
-        >
-          &lt;
-        </button>
-        {getPageNumbers(page, totalPages).map((num, idx) =>
-          num === "..." ? (
-            <span key={idx} style={{ display: "inline-block", minWidth: 36, textAlign: "center" }}>...</span>
-          ) : (
-            <button
-              key={num}
-              className="nav-btn"
-              style={{
-                minWidth: 36,
-                background: num === page ? "#222" : "#fff",
-                color: num === page ? "#fff" : "#222",
-                border: num === page ? "2px solid #a18cd1" : "1px solid #ccc",
-                fontWeight: num === page ? "bold" : "normal",
-              }}
-              onClick={() => setPage(num)}
-              disabled={num === page}
-            >
-              {num}
-            </button>
-          )
-        )}
-        <button
-          className="nav-btn"
-          onClick={() => setPage(page + 1)}
-          disabled={page === totalPages || totalPages === 0}
-          style={{ minWidth: 36 }}
-        >
-          &gt;
-        </button>
+          <button
+            className="nav-btn"
+            onClick={() => setPage(page + 1)}
+            disabled={page === totalPages || totalPages === 0}
+            style={{ 
+              minWidth: 36,
+              padding: "6px 12px",
+              borderRadius: 6,
+              border: "1px solid #a18cd1",
+              background: "white",
+              cursor: (page === totalPages || totalPages === 0) ? "not-allowed" : "pointer",
+              opacity: (page === totalPages || totalPages === 0) ? 0.5 : 1
+            }}
+          >
+            &gt;
+          </button>
+        </div>
       </div>
     </div>
   );
