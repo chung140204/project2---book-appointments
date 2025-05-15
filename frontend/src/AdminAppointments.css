@@ -1,0 +1,273 @@
+.admin-table-container {
+    max-width: 1000px;
+    width: 90%;
+    margin: 40px auto 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 24px;
+  }
+  
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 17px;
+    background: #fff;
+  }
+  
+  .admin-table th, .admin-table td {
+    border: 1px solid #d1d5db;
+    padding: 12px 10px;
+    text-align: center;
+    color: #222;
+  }
+  
+  .admin-table th {
+    background: #a18cd1;
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  
+  .admin-table tr:nth-child(even) {
+    background: #f3f4f6;
+  }
+  
+  .admin-table tr:nth-child(odd) {
+    background: #fff;
+  }
+  
+  .admin-table td {
+    font-weight: 500;
+  }
+  
+  h2 {
+    color: #5f5fc4;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  
+  .pagination {
+    margin-top: 32px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .pagination button {
+    margin: 0 4px;
+    padding: 8px 16px;
+    border: none;
+    background: #a18cd1;
+    color: #fff;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    box-shadow: 0 2px 8px rgba(161, 140, 209, 0.10);
+    outline: none;
+  }
+  .pagination button.active {
+    background: #5f5fc4;
+    font-weight: bold;
+    box-shadow: 0 4px 16px rgba(95, 95, 196, 0.15);
+    transform: scale(1.08);
+  }
+  .pagination button:hover:not(:disabled):not(.active) {
+    background: #b993d6;
+    box-shadow: 0 2px 12px rgba(161, 140, 209, 0.18);
+    transform: translateY(-2px) scale(1.04);
+  }
+  .pagination button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    color: #eee;
+    box-shadow: none;
+  }
+  @media (max-width: 600px) {
+    .pagination button {
+      padding: 6px 10px;
+      font-size: 0.95rem;
+    }
+    .pagination {
+      gap: 2px;
+    }
+  }
+  /* Nút hành động đẹp, cân đối hơn */
+  .admin-action-buttons {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .accept-btn, .reject-btn {
+    width: 90px;
+    min-width: 0;
+    max-width: 100%;
+    border-radius: 12px;
+    font-size: 0.97rem;
+    font-weight: bold;
+    padding: 7px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    letter-spacing: 0.5px;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    border: none;
+    display: block;
+    text-align: center;
+  }
+  .accept-btn {
+    background: #43a047;
+    color: #fff;
+    margin-bottom: 0;
+  }
+  .accept-btn:hover {
+    background: #388e3c;
+    box-shadow: 0 4px 16px #b2dfdb;
+    transform: translateY(-2px) scale(1.04);
+  }
+  .reject-btn {
+    background: #e53935;
+    color: #fff;
+    margin-bottom: 0;
+  }
+  .reject-btn:hover {
+    background: #b71c1c;
+    box-shadow: 0 4px 16px #ffcdd2;
+    transform: translateY(-2px) scale(1.04);
+  }
+  @media (max-width: 600px) {
+    .admin-action-buttons {
+      flex-direction: column;
+      gap: 12px;
+    }
+    .accept-btn, .reject-btn {
+      width: 100%;
+      font-size: 0.93rem;
+      padding: 8px 0;
+    }
+  }
+  .logout-btn {
+    background: linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(161, 140, 209, 0.15);
+    transition: background 0.2s, transform 0.15s;
+    outline: none;
+  }
+  .logout-btn:hover {
+    background: linear-gradient(90deg, #5f5fc4 0%, #a1c4fd 100%);
+    transform: translateY(-2px) scale(1.04);
+    color: #fff;
+  }
+  .service-btn {
+    padding: 10px 24px;
+    background: linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(161,140,209,0.2);
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .service-btn:hover {
+    background: linear-gradient(90deg, #fbc2eb 0%, #a18cd1 100%);
+    box-shadow: 0 4px 16px rgba(161,140,209,0.25);
+  }
+  .admin-services-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px #e0e0e0;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .admin-services-table th, .admin-services-table td {
+    padding: 14px 12px;
+    text-align: center;
+    font-size: 1.08rem;
+  }
+  .admin-services-table th {
+    background: #a18cd1;
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .admin-services-table tr:nth-child(even) {
+    background: #f3f4f6;
+  }
+  .admin-services-table tr:nth-child(odd) {
+    background: #fff;
+  }
+  .admin-services-table td {
+    font-weight: 500;
+  }
+  .admin-services-form input {
+    border: 1.5px solid #a18cd1;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    margin-bottom: 0;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .admin-services-form input:focus {
+    border: 2px solid #5f5fc4;
+  }
+  .service-row-deleted {
+    background: #eee !important;
+    color: #aaa !important;
+    opacity: 0.6;
+    transition: background 0.3s, color 0.3s, opacity 0.3s;
+  }
+  /* Đảm bảo cột Hành động không bị bóp quá nhỏ */
+  .admin-table td:last-child, .admin-table th:last-child {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  /* Luôn xếp dọc 2 nút khi không đủ chỗ hoặc trên mobile */
+  .admin-action-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  @media (max-width: 900px) {
+    .admin-action-buttons {
+      flex-direction: column;
+      gap: 6px;
+    }
+  }
+  
+  /* Nếu cột dịch vụ quá dài, cho phép xuống dòng chữ trong cell */
+  .admin-table td {
+    word-break: break-word;
+    white-space: normal;
+  }
+  
+  /* Table cuộn ngang trên mobile */
+  @media (max-width: 700px) {
+    .admin-table-container {
+      overflow-x: auto;
+    }
+    .admin-table {
+      min-width: 700px;
+    }
+  }
