@@ -1,0 +1,117 @@
+.admin-calendar-2col {
+  display: flex;
+  gap: 32px;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin: 20px;
+  min-height: 650px;
+}
+
+.calendar-left {
+  flex: 1.1;
+  min-width: 340px;
+}
+
+.calendar-right {
+  flex: 1;
+  background: #fafbfc;
+  border-radius: 8px;
+  padding: 18px 18px 18px 24px;
+  box-shadow: 0 1px 4px rgba(67,206,162,0.07);
+  display: flex;
+  flex-direction: column;
+  min-width: 340px;
+}
+
+.calendar-right-header {
+  margin-bottom: 12px;
+}
+.calendar-right-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #185a9d;
+  margin-bottom: 10px;
+}
+.calendar-status-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.status-filter-btn {
+  border: none;
+  border-radius: 16px;
+  padding: 5px 14px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  background: #e0e0e0;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.status-filter-btn.active {
+  outline: 2px solid #185a9d;
+  background: #185a9d !important;
+  color: #fff !important;
+}
+
+.calendar-right-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+.calendar-right-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 1px 4px rgba(67,206,162,0.07);
+  font-size: 1rem;
+  font-weight: 500;
+}
+.event-time {
+  color: #185a9d;
+  font-weight: 700;
+  min-width: 120px;
+}
+.event-customer {
+  color: #333;
+  font-weight: 600;
+  flex: 1;
+}
+.event-status-badge {
+  border-radius: 12px;
+  padding: 3px 12px;
+  color: #fff;
+  font-size: 0.97rem;
+  font-weight: 600;
+  margin-left: 8px;
+  min-width: 90px;
+  text-align: center;
+}
+.calendar-no-event {
+  color: #888;
+  font-style: italic;
+  padding: 18px 0;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .admin-calendar-2col {
+    flex-direction: column;
+    gap: 18px;
+    padding: 8px;
+  }
+  .calendar-left, .calendar-right {
+    min-width: 0;
+    padding: 0;
+  }
+  .calendar-right {
+    padding: 10px 4px 10px 4px;
+  }
+} 

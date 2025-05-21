@@ -1,7 +1,7 @@
 import React from "react";
 import SidebarButton from "./SidebarButton";
 
-export default function Sidebar({ collapsed, onLogout, navigate }) {
+export default function Sidebar({ collapsed, onLogout, navigate, user, sidebarControl }) {
   return (
     <aside style={{
       width: collapsed ? 60 : 220,
@@ -30,6 +30,14 @@ export default function Sidebar({ collapsed, onLogout, navigate }) {
         <SidebarButton label="Đặt lịch" onClick={() => navigate("/book")} icon="📝" collapsed={collapsed} />
         <SidebarButton label="Lịch của tôi" onClick={() => navigate("/my-appointments")} icon="📅" collapsed={collapsed} />
         <SidebarButton label="Chỉnh sửa thông tin" onClick={() => navigate("/profile")} icon="👤" collapsed={collapsed} />
+        <SidebarButton label="Xem lịch làm việc admin" onClick={() => sidebarControl.setShowAdminCalendar(true)} icon="📆" collapsed={collapsed} />
+        {user?.role === "admin" && (
+          <>
+            <SidebarButton label="Quản lý lịch" onClick={() => navigate("/admin")} icon="📊" collapsed={collapsed} />
+            <SidebarButton label="Quản lý dịch vụ" onClick={() => navigate("/admin/services")} icon="🔧" collapsed={collapsed} />
+            <SidebarButton label="Quản lý user" onClick={() => navigate("/admin/users")} icon="👥" collapsed={collapsed} />
+          </>
+        )}
       </nav>
       <button
         onClick={onLogout}

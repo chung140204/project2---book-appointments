@@ -102,11 +102,6 @@ export default function BookAppointment({ user }) {
     }
   };
 
-  // Hàm đăng xuất
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    window.location.replace("/login"); // dùng replace để không quay lại được trang admin
-  };
 
   return (
     <div

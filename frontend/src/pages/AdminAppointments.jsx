@@ -76,6 +76,7 @@ function AdminAppointments() {
         <h2 style={{ margin: 0 }}>Quản lý lịch hẹn</h2>
         <div style={{ display: 'flex', gap: 12 }}>
           <button className="service-btn" onClick={() => navigate('/admin/services')}>Quản lý dịch vụ</button>
+          <button className="manage-users-btn" onClick={() => navigate('/admin/users')}>Quản lý user</button>
           <button className="logout-btn" onClick={handleLogout}>Đăng xuất</button>
         </div>
       </div>

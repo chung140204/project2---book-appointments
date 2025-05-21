@@ -45,6 +45,10 @@ app.post('/api/login', (req, res) => {
         return res.json({ success: false, message: 'Sai tài khoản!' });
       }
       const user = results[0];
+      // Kiểm tra trạng thái hoạt động
+      if (user.is_active === 0 || user.is_active === false) {
+        return res.json({ success: false, message: 'Tài khoản đã bị khóa!' });
+      }
       // So sánh plain text
       if (password !== user.password) return res.json({ success: false, message: 'Sai mật khẩu!' });
       const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, 'secret', { expiresIn: '1d' });
@@ -297,6 +301,129 @@ app.put('/api/users/:id', (req, res) => {
   db.query('UPDATE users SET name=?, phone=?, gmail=? WHERE id=?', [name, phone, gmail, id], (err, result) => {
     if (err) return res.json({ success: false, message: 'Lỗi cập nhật!' });
     res.json({ success: true });
+  });
+});
+
+// ==== API QUẢN LÝ USER (ADMIN) ====
+// Lấy danh sách user (chỉ admin)
+app.get('/api/admin/users', verifyToken, isAdmin, (req, res) => {
+  const { page = 1, limit = 10, search = '' } = req.query;
+  const offset = (parseInt(page) - 1) * parseInt(limit);
+
+  let where = '';
+  let params = [];
+
+  if (search) {
+    where = 'WHERE username LIKE ? OR name LIKE ? OR gmail LIKE ? OR phone LIKE ?';
+    params = [`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`];
+  }
+
+  // Đếm tổng số user
+  const countQuery = `SELECT COUNT(*) as total FROM users ${where}`;
+  db.query(countQuery, params, (err, countResult) => {
+    if (err) return res.status(500).json({ success: false, message: 'Lỗi truy vấn!' });
+    const total = countResult[0].total;
+
+    // Lấy danh sách user phân trang
+    const dataQuery = `SELECT id, username, name, gmail, phone, role, is_active, created_at FROM users ${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+    db.query(dataQuery, [...params, parseInt(limit), offset], (err, results) => {
+      if (err) return res.status(500).json({ success: false, message: 'Lỗi truy vấn!' });
+      res.json({
+        success: true,
+        users: results,
+        total,
+        page: parseInt(page),
+        totalPages: Math.ceil(total / parseInt(limit))
+      });
+    });
+  });
+});
+
+// Cập nhật thông tin user (chỉ admin)
+app.put('/api/admin/users/:id', verifyToken, isAdmin, (req, res) => {
+  const { id } = req.params;
+  const { name, gmail, phone, role } = req.body;
+
+  // Validate dữ liệu
+  if (!name || name.length < 2) return res.json({ success: false, message: 'Tên không hợp lệ!' });
+  if (!gmail || !gmail.includes('@')) return res.json({ success: false, message: 'Email không hợp lệ!' });
+  if (!phone || !/^0[0-9]{9,10}$/.test(phone)) return res.json({ success: false, message: 'Số điện thoại không hợp lệ!' });
+  if (role && !['user', 'admin'].includes(role)) return res.json({ success: false, message: 'Role không hợp lệ!' });
+
+  db.query(
+    'UPDATE users SET name=?, gmail=?, phone=?, role=? WHERE id=?',
+    [name, gmail, phone, role || 'user', id],
+    (err, result) => {
+      if (err) return res.json({ success: false, message: 'Lỗi cập nhật!' });
+      res.json({ success: true });
+    }
+  );
+});
+
+// Reset mật khẩu user (chỉ admin)
+app.put('/api/admin/users/:id/reset-password', verifyToken, isAdmin, (req, res) => {
+  const { id } = req.params;
+  const { newPassword } = req.body;
+
+  if (!newPassword || newPassword.length < 6) {
+    return res.json({ success: false, message: 'Mật khẩu phải có ít nhất 6 ký tự!' });
+  }
+
+  db.query(
+    'UPDATE users SET password=? WHERE id=?',
+    [newPassword, id],
+    (err, result) => {
+      if (err) return res.json({ success: false, message: 'Lỗi reset mật khẩu!' });
+      res.json({ success: true });
+    }
+  );
+});
+
+// Khóa/Mở khóa user (chỉ admin)
+app.put('/api/admin/users/:id/toggle-status', verifyToken, isAdmin, (req, res) => {
+  const { id } = req.params;
+  const { isActive } = req.body;
+
+  if (typeof isActive !== 'boolean') {
+    return res.json({ success: false, message: 'Trạng thái không hợp lệ!' });
+  }
+
+  db.query(
+    'UPDATE users SET is_active=? WHERE id=?',
+    [isActive, id],
+    (err, result) => {
+      if (err) return res.json({ success: false, message: 'Lỗi cập nhật trạng thái!' });
+      res.json({ success: true });
+    }
+  );
+});
+
+// Xóa user (chỉ admin)
+app.delete('/api/admin/users/:id', verifyToken, isAdmin, (req, res) => {
+  const { id } = req.params;
+
+  // Kiểm tra xem user có lịch hẹn không
+  db.query('SELECT COUNT(*) as count FROM appointments WHERE user_id=?', [id], (err, result) => {
+    if (err) return res.json({ success: false, message: 'Lỗi kiểm tra lịch hẹn!' });
+    
+    if (result[0].count > 0) {
+      return res.json({ success: false, message: 'Không thể xóa user đã có lịch hẹn!' });
+    }
+
+    // Nếu không có lịch hẹn thì xóa user
+    db.query('DELETE FROM users WHERE id=?', [id], (err, result) => {
+      if (err) return res.json({ success: false, message: 'Lỗi xóa user!' });
+      res.json({ success: true });
+    });
+  });
+});
+
+// API public: Lấy tất cả lịch hẹn admin cho user xem (chỉ lấy pending, confirmed, doing)
+app.get('/api/public-appointments', (req, res) => {
+  const query = `SELECT id, name, phone, service, date, time, status FROM appointments WHERE status IN ('pending', 'confirmed', 'doing')`;
+  db.query(query, (err, results) => {
+    if (err) return res.status(500).json({ success: false, message: 'Lỗi truy vấn!' });
+    res.json({ success: true, appointments: results });
   });
 });
 

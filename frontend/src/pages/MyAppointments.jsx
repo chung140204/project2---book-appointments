@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "../MyAppointments.css";
-import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
@@ -9,7 +8,6 @@ export default function MyAppointments({ user }) {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const limit = 4;
-  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
 
@@ -21,12 +19,6 @@ export default function MyAppointments({ user }) {
         setTotal(data.total);
       });
   }, [user.id, page, search, filterStatus]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    window.location.href = "/login"
-  };
 
   const handleCancel = id => {
     Swal.fire({
