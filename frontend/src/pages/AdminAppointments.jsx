@@ -70,6 +70,20 @@ function AdminAppointments() {
   };
   const formatTime = timeStr => typeof timeStr === "string" && timeStr.length >= 5 ? timeStr.slice(0, 5) : `${String(new Date(timeStr).getHours()).padStart(2, '0')}:${String(new Date(timeStr).getMinutes()).padStart(2, '0')}`;
 
+  // Helper để sinh danh sách số trang hiển thị
+  function getPageNumbers(current, total) {
+    const delta = 2;
+    const range = [];
+    for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+      range.push(i);
+    }
+    if (current - delta > 2) range.unshift("...");
+    if (current + delta < total - 1) range.push("...");
+    range.unshift(1);
+    if (total > 1) range.push(total);
+    return range.filter((v, i, arr) => arr.indexOf(v) === i);
+  }
+
   return (
     <div className="admin-table-container">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
@@ -110,6 +124,7 @@ function AdminAppointments() {
             <th>Họ tên</th>
             <th>SĐT</th>
             <th>Dịch vụ</th>
+            <th>Mô tả</th>
             <th>Ngày</th>
             <th>Giờ</th>
             <th>Trạng thái</th>
@@ -123,11 +138,12 @@ function AdminAppointments() {
             </tr>
           ) : (
             appointments.map((a, idx) => (
-              <tr key={a.id}>
+              <tr key={`${a.id}-${idx}`}>
                 <td>{(page - 1) * 4 + idx + 1}</td>
                 <td>{a.name || "-"}</td>
                 <td>{a.phone || "-"}</td>
                 <td>{a.service || "-"}</td>
+                <td>{a.description || "-"}</td>
                 <td>{formatDate(a.date)}</td>
                 <td>{formatTime(a.time)}</td>
                 <td>
@@ -156,19 +172,40 @@ function AdminAppointments() {
           )}
         </tbody>
       </table>
-      <div className="pagination">
-        <button disabled={isFirstPage} onClick={prevPage}>Trước</button>
-        {[...Array(totalPages)].map((_, i) => (
-          <button
-            key={i}
-            className={page === i + 1 ? "active" : ""}
-            onClick={() => setPage(i + 1)}
-            disabled={page === i + 1}
-          >
-            {i + 1}
-          </button>
-        ))}
-        <button disabled={isLastPage} onClick={nextPage}>Sau</button>
+      <div className="pagination" style={{ display: 'flex', gap: 8, marginTop: 24, justifyContent: 'center' }}>
+        <button
+          style={{ minWidth: 36, padding: '6px 12px', borderRadius: 6, border: '1px solid #a18cd1', background: 'white', cursor: isFirstPage ? 'not-allowed' : 'pointer', opacity: isFirstPage ? 0.5 : 1 }}
+          disabled={isFirstPage}
+          onClick={prevPage}
+        >&lt;</button>
+        {getPageNumbers(page, totalPages).map((num, idx) =>
+          num === "..." ? (
+            <span key={idx} style={{ display: 'inline-block', minWidth: 36, textAlign: 'center', padding: '6px 12px' }}>...</span>
+          ) : (
+            <button
+              key={num}
+              style={{
+                minWidth: 36,
+                padding: '6px 12px',
+                borderRadius: 6,
+                background: num === page ? '#7c5fe6' : 'white',
+                color: num === page ? 'white' : '#333',
+                border: '1px solid #a18cd1',
+                cursor: num === page ? 'default' : 'pointer',
+                fontWeight: num === page ? 'bold' : 'normal',
+              }}
+              onClick={() => setPage(num)}
+              disabled={num === page}
+            >
+              {num}
+            </button>
+          )
+        )}
+        <button
+          style={{ minWidth: 36, padding: '6px 12px', borderRadius: 6, border: '1px solid #a18cd1', background: 'white', cursor: isLastPage ? 'not-allowed' : 'pointer', opacity: isLastPage ? 0.5 : 1 }}
+          disabled={isLastPage}
+          onClick={nextPage}
+        >&gt;</button>
       </div>
     </div>
   );

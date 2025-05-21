@@ -187,7 +187,7 @@ export default function AdminUsers() {
           </thead>
           <tbody>
             {users.map(user => (
-              <tr key={user.id} className={!user.is_active ? 'user-inactive' : ''}>
+              <tr key={`${user.id}-${user.username}`} className={!user.is_active ? 'user-inactive' : ''}>
                 <td>{user.id}</td>
                 <td>{user.username}</td>
                 <td>

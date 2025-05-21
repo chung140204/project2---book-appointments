@@ -120,7 +120,7 @@ export default function AdminServices() {
         </thead>
         <tbody>
           {filteredServices.map(s => (
-            <tr key={s.id} className={deletedIds.includes(s.id) ? "service-row-deleted" : ""}>
+            <tr key={`${s.id}-${s.name}`} className={deletedIds.includes(s.id) ? "service-row-deleted" : ""}>
               <td style={{ padding: 8 }}>{s.name}</td>
               <td style={{ padding: 8 }}>{s.description || "-"}</td>
               <td style={{ padding: 8 }}>{s.price}</td>

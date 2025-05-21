@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import 'moment/locale/vi';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './AdminCalendar.css';
@@ -98,10 +98,9 @@ const AdminCalendar = () => {
             // Parse local time tránh lệch múi giờ
             const [year, month, day] = dateStr.split('-').map(Number);
             const [h, m, s] = timeStr.split(':').map(Number);
+            const start = moment.tz(`${dateStr} ${timeStr}`, 'YYYY-MM-DD HH:mm:ss', 'Asia/Ho_Chi_Minh').toDate();
             const blockEnd = `${String(h+1).padStart(2, '0')}:00:00`;
-            const [eh, em, es] = blockEnd.split(':').map(Number);
-            const start = new Date(year, month - 1, day, h, m, s || 0);
-            const end = new Date(year, month - 1, day, eh, em, es || 0);
+            const end = moment.tz(`${dateStr} ${blockEnd}`, 'YYYY-MM-DD HH:mm:ss', 'Asia/Ho_Chi_Minh').toDate();
             if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
             return {
               ...ev,

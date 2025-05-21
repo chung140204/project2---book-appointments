@@ -134,18 +134,20 @@ export default function MyAppointments({ user }) {
               <th>Dịch vụ</th>
               <th>Họ tên</th>
               <th>SĐT</th>
+              <th>Mô tả</th>
               <th>Trạng thái</th>
               <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
-            {appointments.map(a => (
-              <tr key={a.id}>
+            {appointments.map((a, idx) => (
+              <tr key={`${a.id}-${idx}`}>
                 <td>{formatDate(a.date)}</td>
                 <td>{formatTime(a.time)}</td>
                 <td>{a.service}</td>
                 <td>{a.name || "-"}</td>
                 <td>{a.phone || "-"}</td>
+                <td>{a.description || "-"}</td>
                 <td>
                   <span className={
                     a.status === "confirmed"
