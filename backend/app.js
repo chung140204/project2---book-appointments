@@ -82,6 +82,10 @@ app.post('/api/appointments', (req, res) => {
   const [h, m] = time.split(':').map(Number);
   const bookingDateTime = new Date(inputDate);
   bookingDateTime.setHours(h, m, 0, 0);
+  // Chỉ cho phép đặt trong khung 8h00 đến trước 17h00
+  if (h < 8 || h >= 17) {
+    return res.json({ success: false, message: 'Chỉ được đặt lịch từ 08:00 đến 17:00 (block cuối cùng là 16:00–17:00)!' });
+  }
   // Đặt trước ít nhất 1 giờ
   if (bookingDateTime - now < 60 * 60 * 1000) {
     return res.json({ success: false, message: 'Bạn phải đặt lịch trước ít nhất 1 giờ!' });
@@ -93,40 +97,53 @@ app.post('/api/appointments', (req, res) => {
   if (bookingDateTime > maxDate) {
     return res.json({ success: false, message: `Bạn chỉ có thể đặt lịch trong vòng ${maxAdvance} ngày tới!` });
   }
-  // Kiểm tra dịch vụ hợp lệ (lấy từ DB)
-  db.query('SELECT name FROM services', (err, results) => {
-    if (err) return res.json({ success: false, message: 'Lỗi kiểm tra dịch vụ!' });
-    const validServices = results.map(s => s.name);
-    if (!service || !validServices.includes(service)) {
-      return res.json({ success: false, message: 'Dịch vụ không hợp lệ!' });
-    }
-    // Chia block 1 tiếng từ 8h đến 17h
-    const blockStart = `${String(h).padStart(2, '0')}:00:00`;
-    const blockEnd = `${String(h+1).padStart(2, '0')}:00:00`;
-    db.query(
-      `SELECT * FROM appointments 
-       WHERE DATE(date) = ? AND status IN ('pending', 'confirmed')
-       AND time >= ? AND time < ?`,
-      [date.slice(0,10), blockStart, blockEnd],
-      (err, results) => {
-        if (err) return res.json({ success: false, message: 'Lỗi kiểm tra trùng lịch!' });
-        if (results.length > 0) {
-          return res.json({ success: false, message: `Khung giờ ${blockStart}–${blockEnd} đã có người đặt, vui lòng chọn thời gian khác!` });
+  // Kiểm tra mỗi user chỉ đặt 1 lịch mỗi ngày
+  db.query(
+    `SELECT COUNT(*) as count FROM appointments 
+     WHERE DATE(date) = ? AND user_id = ? AND status IN ('pending', 'confirmed')`,
+    [date.slice(0, 10), user_id],
+    (err, results) => {
+      if (err) return res.json({ success: false, message: 'Lỗi kiểm tra lịch!' });
+      if (results[0].count >= 1) {
+        return res.json({ success: false, message: 'Bạn chỉ có thể đặt 1 lịch mỗi ngày!' });
+      }
+      // Kiểm tra dịch vụ hợp lệ (lấy từ DB)
+      db.query('SELECT name FROM services', (err, results) => {
+        if (err) return res.json({ success: false, message: 'Lỗi kiểm tra dịch vụ!' });
+        const validServices = results.map(s => s.name);
+        if (!service || !validServices.includes(service)) {
+          return res.json({ success: false, message: 'Dịch vụ không hợp lệ!' });
         }
+        // Chia block 1 tiếng từ 8h đến 17h
+        const blockStart = `${String(h).padStart(2, '0')}:00:00`;
+        const blockEnd = `${String(h+1).padStart(2, '0')}:00:00`;
         db.query(
-          'INSERT INTO appointments (user_id, name, phone, date, time, service, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-          [user_id, name, phone, date, time, service, description || '', 'pending'],
-          (err, result) => {
-            if (err) {
-              console.log('Lỗi đặt lịch:', err);
-              return res.json({ success: false, message: 'Lỗi đặt lịch!' });
+          `SELECT * FROM appointments 
+           WHERE DATE(date) = ? AND status IN ('pending', 'confirmed')
+           AND time >= ? AND time < ?`,
+          [date.slice(0,10), blockStart, blockEnd],
+          (err, results) => {
+            if (err) return res.json({ success: false, message: 'Lỗi kiểm tra trùng lịch!' });
+            if (results.length > 0) {
+              return res.json({ success: false, message: `Khung giờ ${blockStart}–${blockEnd} đã có người đặt, vui lòng chọn thời gian khác!` });
             }
-            res.json({ success: true });
+            // Insert lịch mới
+            db.query(
+              'INSERT INTO appointments (user_id, name, phone, date, time, service, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+              [user_id, name, phone, date, time, service, description || '', 'pending'],
+              (err, result) => {
+                if (err) {
+                  console.log('Lỗi đặt lịch:', err);
+                  return res.json({ success: false, message: 'Lỗi đặt lịch!' });
+                }
+                res.json({ success: true });
+              }
+            );
           }
         );
-      }
-    );
-  });
+      });
+    }
+  );
 });
 
 // Xem lịch hẹn của user
