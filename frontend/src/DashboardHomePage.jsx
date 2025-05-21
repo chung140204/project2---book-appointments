@@ -3,62 +3,53 @@ import {useNavigate } from "react-router-dom";
 import AdminCalendar from './components/AdminCalendar';
 
 
-export default function DashboardHomePage({ sidebarControl }) {
+export default function DashboardHomePage() {
     const navigate = useNavigate();
-    const [showAdminCalendar, setShowAdminCalendar] = useState(false);
-    // Cho phép sidebar gọi hàm này
-    if (sidebarControl) sidebarControl.setShowAdminCalendar = setShowAdminCalendar;
-  return (
-    <div>
-      <div style={{ fontSize: 28, fontWeight: 700, marginBottom: 32, color: "#232d3b" }}>
-        Xin chào! 👋
+    return (
+      <div>
+        <div style={{ fontSize: 28, fontWeight: 700, marginBottom: 32, color: "#232d3b" }}>
+          Xin chào! 👋
+        </div>
+        <div style={{ display: "flex", gap: 32, marginBottom: 40 }}>
+          <DashboardCard
+            color="#f06292"
+            icon="📝"
+            label="Đặt lịch"
+            onClick={() => navigate("/book")}
+          />
+          <DashboardCard
+            color="#64b5f6"
+            icon="📅"
+            label="Lịch của tôi"
+            onClick={() => navigate("/my-appointments")}
+          />
+          <DashboardCard
+            color="#ffd54f"
+            icon="👤"
+            label="Chỉnh sửa thông tin"
+            onClick={() => navigate("/profile")}
+          />
+          <DashboardCard
+            color="#43cea2"
+            icon="📆"
+            label="Xem lịch làm việc admin"
+            onClick={() => navigate("/admin-calendar")}
+          />
+        </div>
+        <div style={{
+          background: "#fff",
+          borderRadius: 16,
+          padding: 32,
+          boxShadow: "0 2px 12px rgba(161,140,209,0.08)",
+          minHeight: 200
+        }}>
+          <h2 style={{ color: "#7c5fe6", marginBottom: 16 }}>Chào mừng bạn đến với hệ thống đặt lịch hẹn!</h2>
+          <p style={{ color: "#444", fontSize: 18 }}>
+            Hãy sử dụng sidebar hoặc các ô chức năng phía trên để đặt lịch, xem lịch của bạn hoặc quay về trang chủ.
+          </p>
+        </div>
       </div>
-      {!showAdminCalendar ? (
-        <>
-          <div style={{ display: "flex", gap: 32, marginBottom: 40 }}>
-            <DashboardCard
-              color="#f06292"
-              icon="📝"
-              label="Đặt lịch"
-              onClick={() => navigate("/book")}
-            />
-            <DashboardCard
-              color="#64b5f6"
-              icon="📅"
-              label="Lịch của tôi"
-              onClick={() => navigate("/my-appointments")}
-            />
-            <DashboardCard
-              color="#ffd54f"
-              icon="👤"
-              label="Chỉnh sửa thông tin"
-              onClick={() => navigate("/profile")}
-            />
-            <DashboardCard
-              color="#43cea2"
-              icon="📆"
-              label="Xem lịch làm việc admin"
-              onClick={() => setShowAdminCalendar(true)}
-            />
-          </div>
-          <div style={{
-            background: "#fff",
-            borderRadius: 16,
-            padding: 32,
-            boxShadow: "0 2px 12px rgba(161,140,209,0.08)",
-            minHeight: 200
-          }}>
-            <h2 style={{ color: "#7c5fe6", marginBottom: 16 }}>Chào mừng bạn đến với hệ thống đặt lịch hẹn!</h2>
-            <p style={{ color: "#444", fontSize: 18 }}>
-              Hãy sử dụng sidebar hoặc các ô chức năng phía trên để đặt lịch, xem lịch của bạn hoặc quay về trang chủ.
-            </p>
-          </div>
-        </>
-      ) : (
-        <AdminCalendar />
-      )}
-    </div>
-  );
+    );
 }
 
 // Sidebar button component

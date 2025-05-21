@@ -54,11 +54,11 @@ function App() {
               <Route path="/my-appointments" element={<MyAppointments user={user} />} />
               <Route path="/profile" element={<ProfileEdit user={user} setUser={setUser} />} />
               <Route path="/search" element={<SearchResults />} />
+              <Route path="/admin-calendar" element={<AdminCalendar />} />
             </Route>
             <Route path="/admin" element={user.role === "admin" ? <AdminAppointments /> : <Navigate to="/dashboard" />} />
             <Route path="/admin/services" element={user.role === "admin" ? <AdminServices /> : <Navigate to="/dashboard" />} />
             <Route path="/admin/users" element={user.role === "admin" ? <AdminUsers /> : <Navigate to="/dashboard" />} />
-            <Route path="/admin-calendar" element={<AdminCalendar />} />
             <Route path="*" element={<NotFound />} />
           </>
         )}
