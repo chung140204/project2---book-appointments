@@ -90,21 +90,24 @@ const AdminCalendar = () => {
     fetch('http://localhost:5000/api/public-appointments')
       .then(res => res.json())
       .then(data => {
+        console.log('API trả về:', data.appointments);
         if (data.success) {
           setEvents(data.appointments.map(ev => {
-            // Lấy ngày yyyy-mm-dd từ ev.date
             const dateStr = ev.date ? ev.date.slice(0, 10) : '';
-            // Nếu thiếu time, mặc định là 08:00:00
             const timeStr = ev.time ? ev.time : '08:00:00';
-            // Kết hợp thành chuỗi ISO
-            const start = new Date(`${dateStr}T${timeStr}`);
-            // Nếu start là Invalid Date, bỏ qua event này
-            if (isNaN(start.getTime())) return null;
+            // Parse local time tránh lệch múi giờ
+            const [year, month, day] = dateStr.split('-').map(Number);
+            const [h, m, s] = timeStr.split(':').map(Number);
+            const blockEnd = `${String(h+1).padStart(2, '0')}:00:00`;
+            const [eh, em, es] = blockEnd.split(':').map(Number);
+            const start = new Date(year, month - 1, day, h, m, s || 0);
+            const end = new Date(year, month - 1, day, eh, em, es || 0);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
             return {
               ...ev,
               title: `${ev.service}${ev.name ? ' - ' + ev.name : ''}`,
               start,
-              end: new Date(start.getTime() + 2 * 60 * 60 * 1000), // mỗi lịch 2h
+              end,
               customer: ev.name,
               status: ev.status
             };
@@ -202,7 +205,10 @@ const AdminCalendar = () => {
           }}
           onSelectSlot={slot => setSelectedDate(slot.start)}
           selectable
-          onSelectEvent={event => setSelectedDate(event.start)}
+          onSelectEvent={event => {
+            setSelectedDate(event.start);
+            setCurrentView('day');
+          }}
           date={selectedDate}
           onNavigate={date => setSelectedDate(date)}
           onView={view => setCurrentView(view)}

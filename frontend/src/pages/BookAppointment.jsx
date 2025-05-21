@@ -11,13 +11,14 @@ const iconStyle = {
 };
 
 export default function BookAppointment({ user }) {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(user?.name || "");
+  const [phone, setPhone] = useState(user?.phone || "");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [service, setService] = useState("");
   const [myAppointments, setMyAppointments] = useState([]);
   const [services, setServices] = useState([]);
+  const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +36,11 @@ export default function BookAppointment({ user }) {
         if (Array.isArray(data)) setServices(data);
       });
   }, []);
+
+  useEffect(() => {
+    setName(user?.name || "");
+    setPhone(user?.phone || "");
+  }, [user?.name, user?.phone]);
 
   // Hàm format date và time chuẩn hóa dữ liệu gửi lên backend
   const formatDate = (date) => {
@@ -91,6 +97,7 @@ export default function BookAppointment({ user }) {
         date: formatDate(date),
         time: formatTime(time),
         service,
+        description,
       }),
     });
     const data = await res.json();
@@ -151,10 +158,10 @@ export default function BookAppointment({ user }) {
             <input
               type="text"
               value={name}
-              onChange={e => setName(e.target.value)}
               placeholder="Họ và tên"
               required
-              style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16 }}
+              readOnly
+              style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16, background: '#f5f5f5', color: '#888' }}
             />
           </label>
           <label style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
@@ -162,10 +169,10 @@ export default function BookAppointment({ user }) {
             <input
               type="tel"
               value={phone}
-              onChange={e => setPhone(e.target.value)}
               placeholder="Số điện thoại"
               required
-              style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16 }}
+              readOnly
+              style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16, background: '#f5f5f5', color: '#888' }}
             />
           </label>
           <label style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
@@ -201,6 +208,16 @@ export default function BookAppointment({ user }) {
                 <option key={s.id} value={s.name}>{s.name}</option>
               ))}
             </select>
+          </label>
+          <label style={{ display: "flex", alignItems: "center", marginBottom: 18 }}>
+            <span style={iconStyle}>📝</span>
+            <textarea
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Mô tả thêm (tuỳ chọn)"
+              rows={3}
+              style={{ flex: 1, width: '100%', padding: 12, borderRadius: 8, border: '1px solid #d1d1d1', fontSize: 16, resize: 'vertical' }}
+            />
           </label>
           <button type="submit" style={{
             width: "100%",
