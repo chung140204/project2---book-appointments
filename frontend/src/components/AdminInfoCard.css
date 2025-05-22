@@ -1,0 +1,64 @@
+.admin-info-card {
+  background: linear-gradient(135deg, #64b5f6 0%, #a18cd1 100%);
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(161,140,209,0.10);
+  padding: 28px;
+  width: 100%;
+  max-width: 320px;
+  color: #232d3b;
+  text-align: center;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.admin-info-card__icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.admin-info-card__name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #232d3b;
+}
+
+.admin-info-card__contact {
+  font-size: 16px;
+  color: #2c3e50;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.admin-info-card__phone {
+  font-size: 16px;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.admin-info-card__role {
+  font-size: 15px;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.admin-info-card__role span {
+  color: #4a148c;
+  font-weight: 700;
+}
+
+.admin-info-card__description {
+  font-size: 15px;
+  color: #2c3e50;
+  margin-bottom: 0;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* Container for centering the card */
+.admin-info-card-container {
+  margin-top: 36px;
+  display: flex;
+  justify-content: center;
+} 

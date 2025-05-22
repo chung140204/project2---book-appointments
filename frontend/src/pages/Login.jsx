@@ -25,11 +25,7 @@ export default function Login({ setUser }) {
       localStorage.setItem("user", JSON.stringify(data.user));
       setUser(data.user);
       toast.success("Đăng nhập thành công!");
-      if (data.user.role === "admin") {
-        setTimeout(() => navigate("/admin"), 800);
-      } else {
-        setTimeout(() => navigate("/dashboard"), 800);
-      }
+      setTimeout(() => navigate("/dashboard"), 800);
     } else {
       toast.error(data.message || "Đăng nhập thất bại!");
     }

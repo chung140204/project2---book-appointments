@@ -153,21 +153,13 @@ export default function AdminUsers() {
     <div className="admin-users-container">
       <div className="admin-users-header">
         <h1>Quản lý người dùng</h1>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button
-            className="back-admin-btn"
-            onClick={() => navigate('/admin')}
-          >
-            Quay lại
-          </button>
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Tìm kiếm user..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-          </div>
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Tìm kiếm user..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
         </div>
       </div>
 

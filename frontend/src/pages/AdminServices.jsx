@@ -93,7 +93,6 @@ export default function AdminServices() {
     <div style={{ maxWidth: 700, margin: "40px auto", background: "#fff", borderRadius: 12, boxShadow: "0 2px 12px #ccc", padding: 32 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h2 style={{ margin: 0 }}>Quản lý dịch vụ</h2>
-        <button className="service-btn" onClick={() => navigate('/admin')}>Quay lại trang admin</button>
       </div>
       <input
         type="text"

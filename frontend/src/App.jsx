@@ -15,6 +15,8 @@ import ProfileEdit from "./pages/ProfileEdit";
 import UserLayout from "./UserLayout";
 import SearchResults from "./pages/SearchResults";
 import AdminCalendar from './components/AdminCalendar';
+import AdminLayout from "./AdminLayout";
+import ServicesInfo from './pages/ServicesInfo';
 
 function App() {
   const [user, setUser] = useState(undefined);
@@ -49,16 +51,20 @@ function App() {
             <Route path="/login" element={<Navigate to="/dashboard" />} />
             <Route path="/register" element={<Navigate to="/dashboard" />} />
             <Route element={<UserLayout user={user} setUser={setUser} sidebarControl={sidebarControl} />}>
-              <Route path="/dashboard" element={<DashboardHomePage setUser={setUser} sidebarControl={sidebarControl} />} />
+              <Route path="/dashboard" element={<DashboardHomePage user={user} setUser={setUser} sidebarControl={sidebarControl} />} />
               <Route path="/book" element={<BookAppointment user={user} />} />
               <Route path="/my-appointments" element={<MyAppointments user={user} />} />
               <Route path="/profile" element={<ProfileEdit user={user} setUser={setUser} />} />
+              <Route path="/services-info" element={<ServicesInfo />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/admin-calendar" element={<AdminCalendar />} />
             </Route>
-            <Route path="/admin" element={user.role === "admin" ? <AdminAppointments /> : <Navigate to="/dashboard" />} />
-            <Route path="/admin/services" element={user.role === "admin" ? <AdminServices /> : <Navigate to="/dashboard" />} />
-            <Route path="/admin/users" element={user.role === "admin" ? <AdminUsers /> : <Navigate to="/dashboard" />} />
+            <Route element={<AdminLayout user={user} onLogout={() => { localStorage.removeItem('user'); window.location.replace('/login'); }} />}>
+              <Route path="/admin" element={user.role === "admin" ? <AdminAppointments /> : <Navigate to="/dashboard" />} />
+              <Route path="/admin/services" element={user.role === "admin" ? <AdminServices /> : <Navigate to="/dashboard" />} />
+              <Route path="/admin/users" element={user.role === "admin" ? <AdminUsers /> : <Navigate to="/dashboard" />} />
+              <Route path="/admin-calendar" element={user.role === "admin" ? <AdminCalendar user={user} /> : <Navigate to="/dashboard" />} />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </>
         )}

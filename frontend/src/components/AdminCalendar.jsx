@@ -4,6 +4,8 @@ import moment from 'moment-timezone';
 import 'moment/locale/vi';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './AdminCalendar.css';
+import './AdminInfoCard.css';
+import { useOutletContext } from 'react-router-dom';
 
 moment.locale('vi');
 const localizer = momentLocalizer(moment);
@@ -81,6 +83,13 @@ const WORK_START = 8; // 8:00
 const WORK_END = 17;  // 17:00
 
 const AdminCalendar = () => {
+  // Thông tin admin cứng
+  const adminInfo = {
+    name: "Admin Lịch Hẹn",
+    gmail: "admin@booking.com",
+    phone: "0123456789",
+    role: "admin"
+  };
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [statusFilter, setStatusFilter] = useState('all');
@@ -247,6 +256,27 @@ const AdminCalendar = () => {
           
         </div>
         <span style={{ float: 'right', marginTop: 8 }}>Thời gian làm việc: 8:00 - 17:00</span>
+        <div style={{
+          marginTop: 36,
+          display: 'flex',
+          justifyContent: 'center',
+        }}>
+          <div className="admin-info-card-container">
+            <div className="admin-info-card">
+              <div className="admin-info-card__icon">👨‍💼</div>
+              <div className="admin-info-card__name">{adminInfo.name}</div>
+              <div className="admin-info-card__contact">{adminInfo.gmail}</div>
+              <div className="admin-info-card__phone">{`SĐT: ${adminInfo.phone}`}</div>
+              <div className="admin-info-card__role">
+                Vai trò: <span>{adminInfo.role}</span>
+              </div>
+              <div className="admin-info-card__description">
+                Quản lý, duyệt và theo dõi tất cả lịch hẹn của hệ thống.<br/>
+                Hỗ trợ người dùng, đảm bảo lịch trình hoạt động hiệu quả.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

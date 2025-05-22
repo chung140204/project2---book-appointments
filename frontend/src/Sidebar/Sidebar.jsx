@@ -27,10 +27,16 @@ export default function Sidebar({ collapsed, onLogout, navigate, user, sidebarCo
       </div>
       <nav style={{ flex: 1 }}>
         <SidebarButton label="Home" onClick={() => navigate("/dashboard")} icon="🏠" collapsed={collapsed} />
-        <SidebarButton label="Đặt lịch" onClick={() => navigate("/book")} icon="📝" collapsed={collapsed} />
-        <SidebarButton label="Lịch của tôi" onClick={() => navigate("/my-appointments")} icon="📅" collapsed={collapsed} />
-        <SidebarButton label="Chỉnh sửa thông tin" onClick={() => navigate("/profile")} icon="👤" collapsed={collapsed} />
-        <SidebarButton label="Xem lịch làm việc admin" onClick={() => navigate("/admin-calendar")} icon="📆" collapsed={collapsed} />        {user?.role === "admin" && (
+        {user?.role !== "admin" && (
+          <>
+            <SidebarButton label="Đặt lịch" onClick={() => navigate("/book")} icon="📝" collapsed={collapsed} />
+            <SidebarButton label="Lịch của tôi" onClick={() => navigate("/my-appointments")} icon="📅" collapsed={collapsed} />
+            <SidebarButton label="Chỉnh sửa thông tin" onClick={() => navigate("/profile")} icon="👤" collapsed={collapsed} />
+            <SidebarButton label="Thông tin dịch vụ" onClick={() => navigate("/services-info")} icon="📖" collapsed={collapsed} />
+          </>
+        )}
+        <SidebarButton label="Xem lịch làm việc admin" onClick={() => navigate("/admin-calendar")} icon="📆" collapsed={collapsed} />
+        {user?.role === "admin" && (
           <>
             <SidebarButton label="Quản lý lịch" onClick={() => navigate("/admin")} icon="📊" collapsed={collapsed} />
             <SidebarButton label="Quản lý dịch vụ" onClick={() => navigate("/admin/services")} icon="🔧" collapsed={collapsed} />
