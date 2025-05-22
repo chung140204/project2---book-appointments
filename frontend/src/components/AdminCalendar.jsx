@@ -102,14 +102,21 @@ const AdminCalendar = () => {
         console.log('API trả về:', data.appointments);
         if (data.success) {
           setEvents(data.appointments.map(ev => {
-            const dateStr = ev.date ? ev.date.slice(0, 10) : '';
-            const timeStr = ev.time ? ev.time : '08:00:00';
-            // Parse local time tránh lệch múi giờ
-            const [year, month, day] = dateStr.split('-').map(Number);
-            const [h, m, s] = timeStr.split(':').map(Number);
-            const start = moment.tz(`${dateStr} ${timeStr}`, 'YYYY-MM-DD HH:mm:ss', 'Asia/Ho_Chi_Minh').toDate();
-            const blockEnd = `${String(h+1).padStart(2, '0')}:00:00`;
-            const end = moment.tz(`${dateStr} ${blockEnd}`, 'YYYY-MM-DD HH:mm:ss', 'Asia/Ho_Chi_Minh').toDate();
+            // Xử lý date dạng ISO UTC
+            const startMoment = moment.utc(ev.date).tz('Asia/Ho_Chi_Minh');
+            const [h, m, s] = (ev.time || '08:00:00').split(':').map(Number);
+            const start = new Date(
+              startMoment.year(),
+              startMoment.month(),
+              startMoment.date(),
+              h, m, s
+            );
+            const end = new Date(
+              startMoment.year(),
+              startMoment.month(),
+              startMoment.date(),
+              h + 1, 0, 0
+            );
             if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
             return {
               ...ev,
@@ -252,7 +259,7 @@ const AdminCalendar = () => {
         <div style={{ marginTop: 8 }}>
           <span style={{ background: '#ffecb3', padding: '2px 8px', borderRadius: 4, marginRight: 8 }}>Chờ xác nhận</span>
           <span style={{ background: '#bbdefb', padding: '2px 8px', borderRadius: 4, marginRight: 8 }}>Đã xác nhận</span>
-          <span style={{ border: '1px solid #ccc', padding: '2px 8px', borderRadius: 4 }}>Trống: Có thể đặt lịch</span>
+          <span style={{ border: '1px solid #ccc', padding: '2px 8px', borderRadius: 4 }}>Trống</span>
           
         </div>
         <span style={{ float: 'right', marginTop: 8 }}>Thời gian làm việc: 8:00 - 17:00</span>
