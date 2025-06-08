@@ -6,6 +6,7 @@ import { useState } from "react";
 export default function UserLayout({ user, setUser, sidebarControl }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
+  const [lang, setLang] = useState("en");
 
   const handleLogout = () => {
     localStorage.removeItem("token");

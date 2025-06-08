@@ -5,7 +5,8 @@ import 'moment/locale/vi';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './AdminCalendar.css';
 import './AdminInfoCard.css';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
+import { FaPlus } from 'react-icons/fa';
 
 moment.locale('vi');
 const localizer = momentLocalizer(moment);
@@ -82,6 +83,46 @@ function isSameDay(d1, d2) {
 const WORK_START = 8; // 8:00
 const WORK_END = 17;  // 17:00
 
+// Custom Toolbar cho react-big-calendar
+function CustomToolbar(toolbar) {
+  const navigate = useNavigate();
+  return (
+    <div className="rbc-toolbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div>
+        <button type="button" onClick={() => toolbar.onNavigate('PREV')}>Trước</button>
+        <button type="button" onClick={() => toolbar.onNavigate('TODAY')}>Hôm nay</button>
+        <button type="button" onClick={() => toolbar.onNavigate('NEXT')}>Tiếp</button>
+      </div>
+      <span className="rbc-toolbar-label" style={{ fontWeight: 600, fontSize: 18 }}>{toolbar.label}</span>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button
+          type="button"
+          style={{ marginRight: 8 }}
+          onClick={() => toolbar.onView('month')}
+          className={toolbar.view === 'month' ? 'rbc-active' : ''}
+        >Tháng</button>
+        <button
+          type="button"
+          onClick={() => toolbar.onView('week')}
+          className={toolbar.view === 'week' ? 'rbc-active' : ''}
+        >Tuần</button>
+        <button
+          type="button"
+          onClick={() => toolbar.onView('day')}
+          className={toolbar.view === 'day' ? 'rbc-active' : ''}
+        >Ngày</button>
+        <button
+          type="button"
+          style={{ background: '#1976d2', color: '#fff', borderRadius: 4, padding: '6px 14px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
+          onClick={() => navigate('/book')}
+        >
+          <FaPlus /> Đặt lịch hẹn
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const AdminCalendar = () => {
   // Thông tin admin cứng
   const adminInfo = {
@@ -91,7 +132,7 @@ const AdminCalendar = () => {
     role: "admin"
   };
   const [events, setEvents] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(() => new Date());
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentView, setCurrentView] = useState('month');
 
@@ -229,7 +270,8 @@ const AdminCalendar = () => {
           onView={view => setCurrentView(view)}
           view={currentView}
           components={{
-            event: currentView === 'week' ? EmptyEvent : undefined
+            event: currentView === 'week' ? EmptyEvent : undefined,
+            toolbar: CustomToolbar
           }}
         />
       </div>

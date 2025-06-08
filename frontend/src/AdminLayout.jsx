@@ -2,10 +2,15 @@ import { useState } from "react";
 import Sidebar from "./Sidebar/Sidebar";
 import HeaderBar from "./HeaderBar/HeaderBar";
 import { useNavigate, Outlet } from "react-router-dom";
+import LanguageSelector from "./HeaderBar/LanguageSelector";
+import NotificationBell from "./HeaderBar/NotificationBell";
+import ProfileMenu from "./HeaderBar/ProfileMenu";
 
 export default function AdminLayout({ user, onLogout, children }) {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
+  const [lang, setLang] = useState("en");
+
   return (
     <div style={{
       display: 'flex',

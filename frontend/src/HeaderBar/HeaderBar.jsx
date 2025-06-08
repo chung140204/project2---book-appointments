@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LanguageSelector from "./LanguageSelector";
 import NotificationBell from "./NotificationBell";
 import ProfileMenu from "./ProfileMenu";
@@ -8,6 +8,10 @@ export default function HeaderBar({ user, onToggleSidebar, onLogout }) {
   const [lang, setLang] = useState("en");
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log('HeaderBar user:', user);
+  }, [user]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -77,7 +81,10 @@ export default function HeaderBar({ user, onToggleSidebar, onLogout }) {
             alignItems: "center", justifyContent: "center"
           }}>2</span>
         </span>
-        <NotificationBell />
+        <NotificationBell 
+          userId={user?.id} 
+          type={user?.role === 'admin' ? 'admin' : 'user'} 
+        />
         <ProfileMenu user={user} onLogout={onLogout} />
         {/* Settings */}
         <span className="material-icons" style={{ fontSize: 22, color: "#888", cursor: "pointer" }}>

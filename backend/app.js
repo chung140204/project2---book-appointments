@@ -136,6 +136,14 @@ app.post('/api/appointments', (req, res) => {
                   console.log('Lỗi đặt lịch:', err);
                   return res.json({ success: false, message: 'Lỗi đặt lịch!' });
                 }
+                // Gửi thông báo cho admin (user_id=9) với format: '[Tên] vừa đặt lịch hẹn vào [dd/mm/yyyy] lúc [hh:mm]'
+                const dateStr = new Date(date).toLocaleDateString('vi-VN');
+                const timeStr = time.slice(0,5); // Lấy hh:mm
+                const content = `${name} vừa đặt lịch hẹn vào ${dateStr} lúc ${timeStr}`;
+                db.query(
+                  'INSERT INTO notifications (user_id, type, content) VALUES (?, ?, ?)',
+                  [9, 'admin', content]
+                );
                 res.json({ success: true });
               }
             );
@@ -257,7 +265,30 @@ app.put('/api/admin/appointments/:id', (req, res) => {
         console.log('Lỗi cập nhật trạng thái:', err);
         return res.json({ success: false, message: 'Lỗi cập nhật!' });
       }
-      res.json({ success: true });
+      // Lấy thông tin lịch hẹn để gửi thông báo cho user
+      db.query('SELECT * FROM appointments WHERE id = ?', [id], (err2, results) => {
+        if (!err2 && results.length > 0) {
+          const appt = results[0];
+          const dateStr = new Date(appt.date).toLocaleDateString('vi-VN');
+          let content = '';
+          if (status === 'confirmed') {
+            content = `Lịch hẹn ngày ${dateStr} lúc ${appt.time} đã được xác nhận!`;
+          } else {
+            content = `Lịch hẹn ngày ${dateStr} lúc ${appt.time} đã bị từ chối.`;
+          }
+          db.query(
+            'INSERT INTO notifications (user_id, type, content) VALUES (?, ?, ?)',
+            [appt.user_id, 'user', content],
+            (err3) => {
+              if (err3) console.log('Lỗi insert notification:', err3);
+              else console.log('Đã insert notification cho user:', appt.user_id);
+            }
+          );
+        } else {
+          console.log('Không tìm thấy lịch hẹn để gửi thông báo cho user');
+        }
+        res.json({ success: true });
+      });
     }
   );
 });
@@ -461,6 +492,63 @@ app.get('/api/public-appointments', (req, res) => {
     if (err) return res.status(500).json({ success: false, message: 'Lỗi truy vấn!' });
     res.json({ success: true, appointments: results });
   });
+});
+
+// ==== API NOTIFICATIONS ====
+// Tạo thông báo (dùng cho cả user và admin)
+app.post('/api/notifications', (req, res) => {
+  const { user_id, type, content, title } = req.body;
+  if (!user_id || !type || !content) return res.json({ success: false, message: 'Thiếu thông tin!' });
+  db.query(
+    'INSERT INTO notifications (user_id, type, content, title) VALUES (?, ?, ?, ?)',
+    [user_id, type, content, title || null],
+    (err, result) => {
+      if (err) return res.json({ success: false, message: 'Lỗi tạo thông báo!' });
+      res.json({ success: true, id: result.insertId });
+    }
+  );
+});
+
+// Lấy danh sách thông báo theo user_id và type, mới nhất trước
+app.get('/api/notifications', (req, res) => {
+  const { user_id, type } = req.query;
+  if (!user_id || !type) return res.json({ success: false, message: 'Thiếu thông tin!' });
+  db.query(
+    'SELECT * FROM notifications WHERE user_id = ? AND type = ? ORDER BY created_at DESC',
+    [user_id, type],
+    (err, results) => {
+      if (err) return res.json({ success: false, message: 'Lỗi truy vấn!' });
+      res.json({ success: true, notifications: results });
+    }
+  );
+});
+
+// Đánh dấu đã đọc
+app.post('/api/notifications/mark-read', (req, res) => {
+  const { notificationId } = req.body;
+  if (!notificationId) return res.json({ success: false, message: 'Thiếu notificationId!' });
+  db.query(
+    'UPDATE notifications SET is_read = 1 WHERE id = ?',
+    [notificationId],
+    (err, result) => {
+      if (err) return res.json({ success: false, message: 'Lỗi cập nhật!' });
+      res.json({ success: true });
+    }
+  );
+});
+
+// Đánh dấu tất cả đã đọc
+app.post('/api/notifications/mark-all-read', (req, res) => {
+  const { user_id, type } = req.body;
+  if (!user_id || !type) return res.json({ success: false, message: 'Thiếu thông tin!' });
+  db.query(
+    'UPDATE notifications SET is_read = 1 WHERE user_id = ? AND type = ?',
+    [user_id, type],
+    (err, result) => {
+      if (err) return res.json({ success: false, message: 'Lỗi cập nhật!' });
+      res.json({ success: true });
+    }
+  );
 });
 
 const PORT = 5000;

@@ -127,4 +127,51 @@
 }
 .rbc-today .rbc-button-link::after {
   content: '';
+}
+
+.rbc-event.pending {
+  background: #ff9800 !important;
+  color: #fff !important;
+}
+.rbc-event.confirmed {
+  background: #1976d2 !important;
+  color: #fff !important;
+}
+.rbc-event.cancelled {
+  background: #e53935 !important;
+  color: #fff !important;
+}
+.rbc-event {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.calendar-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.98rem;
+}
+.legend-color.pending {
+  width: 18px; height: 18px; border-radius: 50%; background: #ff9800; border: 2px solid #fff;
+}
+.legend-color.confirmed {
+  width: 18px; height: 18px; border-radius: 50%; background: #1976d2; border: 2px solid #fff;
+}
+.legend-color.cancelled {
+  width: 18px; height: 18px; border-radius: 50%; background: #e53935; border: 2px solid #fff;
+}
+.legend-color.empty {
+  width: 18px; height: 18px; border-radius: 50%; background: #e0e0e0; border: 2px solid #fff;
+}
+@media (max-width: 900px) {
+  .admin-calendar-2col { flex-direction: column; }
+  .calendar-left, .calendar-right { min-width: 0; width: 100%; }
+  .calendar-legend { flex-wrap: wrap; gap: 8px; }
 } 
