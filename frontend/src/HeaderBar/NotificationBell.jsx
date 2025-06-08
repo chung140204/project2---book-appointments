@@ -154,14 +154,19 @@ const NotificationBell = ({ userId = 1, type = 'admin' }) => {
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
+  // Polling: fetch notifications mỗi 5 giây
   useEffect(() => {
-    if (showDropdown) {
+    if (!userId) return;
+    const fetchNotifications = () => {
       axios.get(`/api/notifications?user_id=${userId}&type=${type}`)
         .then(res => {
           if (res.data.success) setNotifications(res.data.notifications);
         });
-    }
-  }, [userId, type, showDropdown]);
+    };
+    fetchNotifications(); // fetch lần đầu
+    const interval = setInterval(fetchNotifications, 5000); // 5 giây
+    return () => clearInterval(interval);
+  }, [userId, type]);
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
